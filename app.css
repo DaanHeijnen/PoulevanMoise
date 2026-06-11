@@ -1220,36 +1220,21 @@ img { max-width: 100%; height: auto; }
   text-transform: uppercase;
 }
 
-/* Mobile width fix for the wedstrijden page */
-@media (max-width: 620px) {
-  .page-matches {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
+/* Matches page mobile title fix */
+.mobile-break {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .mobile-break {
+    display: inline;
   }
 
-  .page-matches .match-hero,
-  .page-matches .match-hero h1,
-  .page-matches .match-hero p,
-  .page-matches .match-update-panel,
-  .page-matches .matches-list,
-  .page-matches .match-card {
+  .page-matches .hero h1 {
+    font-size: clamp(2.3rem, 10.2vw, 3.8rem);
+    line-height: 0.94;
+    letter-spacing: -0.05em;
     max-width: 100%;
-  }
-
-  .page-matches .match-hero h1 {
-    font-size: clamp(2.35rem, 10.8vw, 3.45rem);
-    line-height: .9;
-    letter-spacing: -1.5px;
-    overflow-wrap: break-word;
-    word-break: normal;
-    hyphens: auto;
   }
 }
 
-@media (max-width: 430px) {
-  .page-matches .match-hero h1 {
-    font-size: clamp(2.25rem, 10.2vw, 3rem);
-    letter-spacing: -2px;
-  }
-}
