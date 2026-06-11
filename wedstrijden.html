@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#8f2d00">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <title>Wedstrijden | Poule van Moise</title>
+  <meta name="description" content="Bekijk de WK-uitslagen en komende wedstrijden.">
+  <link rel="stylesheet" href="/assets/css/app.css?v=polling-2">
+</head>
+<body data-page="matches">
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Poule van Moise startpagina">
+      <span class="ball">⚽</span>
+      <span>Poule van Moise</span>
+    </a>
+    <nav class="site-nav" aria-label="Hoofdnavigatie">
+      <a href="/">Updates</a>
+      <a href="/wedstrijden.html" aria-current="page">Wedstrijden</a>
+      <a href="/rankings.html">Rankings</a>
+    </nav>
+  </header>
+
+  <main class="page page-matches">
+    <section class="hero match-hero">
+      <p class="eyebrow">WK schema</p>
+      <h1>Uitslagen en komende wedstrijden.</h1>
+      <p>Bekijk de gespeelde WK-wedstrijden bovenaan en de wedstrijden die nog komen daaronder. De pagina springt automatisch naar de wedstrijden van vandaag.</p>
+      <div class="match-update-panel" aria-live="polite">
+        <strong id="matches-updated-counter">Scores worden geladen...</strong>
+        <span id="matches-source-info" hidden></span>
+      </div>
+    </section>
+
+    <p id="matches-loading" class="empty-state">Wedstrijden worden geladen...</p>
+    <p id="matches-error" class="error-message" hidden></p>
+
+    <section id="today-section" class="matches-section" hidden>
+      <div class="section-title"><span></span><h2>Vandaag</h2></div>
+      <div id="today-matches" class="matches-list"></div>
+    </section>
+
+    <section id="played-section" class="matches-section" hidden>
+      <div class="section-title"><span></span><h2>Gespeelde wedstrijden</h2></div>
+      <div id="played-matches" class="matches-list"></div>
+    </section>
+
+    <section id="upcoming-section" class="matches-section" hidden>
+      <div class="section-title"><span></span><h2>Komende wedstrijden</h2></div>
+      <div id="upcoming-matches" class="matches-list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <h2>WK nieuws<br>door Moise<br>Maatje</h2>
+      <div class="footer-actions">
+        <button class="footer-link" id="share-site" type="button">Share</button>
+        <a class="footer-link" href="mailto:moisemaatje2@gmail.com">Contact</a>
+        <a class="footer-link" href="/admin-login.html">Admin login</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/app.js?v=polling-2" defer></script>
+</body>
+</html>

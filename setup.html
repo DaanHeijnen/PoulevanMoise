@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#8f2d00">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <title>Setup - Poule van Moise</title>
+  <link rel="stylesheet" href="/assets/css/app.css?v=polling-2">
+</head>
+<body data-page="setup">
+  <main class="auth-page">
+    <section class="panel auth-panel">
+      <p class="eyebrow">Eenmalige setup</p>
+      <h1>Database en admin aanmaken</h1>
+      <form id="setup-form" class="form">
+        <label>Setup-code<input type="password" name="setupSecret" required></label>
+        <label>Admin e-mailadres<input type="email" name="email" required></label>
+        <label>Admin wachtwoord<input type="password" name="password" minlength="8" required></label>
+        <button class="btn btn-primary" type="submit">Setup uitvoeren</button>
+        <p id="setup-message" class="notice" hidden></p>
+        <p id="setup-error" class="error-message" hidden></p>
+      </form>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <h2>WK nieuws<br>door Moise<br>Maatje</h2>
+      <div class="footer-actions">
+        <button class="footer-link" id="share-site" type="button">Share</button>
+        <a class="footer-link" href="mailto:moisemaatje2@gmail.com">Contact</a>
+        <a class="footer-link" href="/admin-login.html">Admin login</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/app.js?v=polling-2" defer></script>
+</body>
+</html>
