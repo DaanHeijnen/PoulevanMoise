@@ -1228,17 +1228,28 @@ img { max-width: 100%; height: auto; }
     overflow-x: hidden;
   }
 
-  .match-hero h1 {
+  .page-matches .match-hero,
+  .page-matches .match-hero h1,
+  .page-matches .match-hero p,
+  .page-matches .match-update-panel,
+  .page-matches .matches-list,
+  .page-matches .match-card {
     max-width: 100%;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    hyphens: auto;
-    font-size: clamp(2.15rem, 13vw, 4rem);
   }
 
-  .matches-list,
-  .match-card,
-  .match-update-panel {
-    max-width: 100%;
+  .page-matches .match-hero h1 {
+    font-size: clamp(2.35rem, 10.8vw, 3.45rem);
+    line-height: .9;
+    letter-spacing: -1.5px;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+  }
+}
+
+@media (max-width: 430px) {
+  .page-matches .match-hero h1 {
+    font-size: clamp(2.25rem, 10.2vw, 3rem);
+    letter-spacing: -2px;
   }
 }
