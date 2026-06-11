@@ -1247,3 +1247,37 @@ img { max-width: 100%; height: auto; }
   }
 }
 
+.install-app-message {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 9999;
+  width: min(calc(100% - 2rem), 420px);
+  transform: translate(-50%, 130%);
+  opacity: 0;
+  pointer-events: none;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  border: 2px solid rgba(143, 45, 0, 0.22);
+  background: #fff4e6;
+  color: #4b1d00;
+  box-shadow: 0 18px 45px rgba(75, 29, 0, 0.22);
+  font-weight: 800;
+  text-align: center;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.install-app-message.is-visible {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+.site-footer [data-install-app],
+footer [data-install-app] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.6rem;
+  font-weight: 900;
+}
+

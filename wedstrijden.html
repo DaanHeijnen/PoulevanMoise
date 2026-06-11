@@ -4,10 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#8f2d00">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Poule van Moise">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <title>Wedstrijden | Poule van Moise</title>
   <meta name="description" content="Bekijk de WK-uitslagen en komende wedstrijden.">
-  <link rel="stylesheet" href="/assets/css/app.css?v=matches-title-width-1">
+  <link rel="stylesheet" href="/assets/css/app.css?v=pwa-1">
 </head>
 <body data-page="matches">
   <header class="site-header">
@@ -65,8 +69,9 @@
         <a class="footer-link" href="/admin-login.html">Admin login</a>
       </div>
     </div>
+    <a href="#" data-install-app>Download als app</a>
   </footer>
 
-  <script src="/assets/js/app.js?v=polling-2" defer></script>
+  <script src="/assets/js/app.js?v=pwa-1" defer></script>
 </body>
 </html>
