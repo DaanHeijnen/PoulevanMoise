@@ -1234,7 +1234,7 @@ img { max-width: 100%; height: auto; }
 
 @media (max-width: 420px) {
   .page-matches .hero h1 {
-    font-size: clamp(3rem, 14vw, 5.1rem);
+    font-size: clamp(2.7rem, 13vw, 4.7rem);
   }
 }
 
