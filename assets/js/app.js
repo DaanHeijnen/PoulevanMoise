@@ -1245,3 +1245,81 @@ async function initPoule() {
 }
 
 if (page === 'poule') initPoule();
+
+
+(function setupPwaInstallButton() {
+  let deferredInstallPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    document.body.classList.add('can-install-pwa');
+  });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+    });
+  }
+
+  function isIos() {
+    return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+  }
+
+  function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+
+  function showInstallMessage(message) {
+    let box = document.querySelector('.install-app-message');
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'install-app-message';
+      box.setAttribute('role', 'status');
+      document.body.appendChild(box);
+    }
+    box.textContent = message;
+    box.classList.add('is-visible');
+    window.setTimeout(() => box.classList.remove('is-visible'), 6500);
+  }
+
+  async function handleInstallClick(event) {
+    event.preventDefault();
+
+    if (isStandalone()) {
+      showInstallMessage('Poule van Moise staat al als app op dit apparaat.');
+      return;
+    }
+
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      try {
+        await deferredInstallPrompt.userChoice;
+      } catch (error) {}
+      deferredInstallPrompt = null;
+      return;
+    }
+
+    if (isIos()) {
+      showInstallMessage('Op iPhone: tik op Delen en kies daarna Zet op beginscherm.');
+      return;
+    }
+
+    showInstallMessage('Open het browsermenu en kies Installeren of Toevoegen aan startscherm.');
+  }
+
+  function enhanceInstallLinks() {
+    document.querySelectorAll('[data-install-app]').forEach((link) => {
+      if (link.dataset.installReady === 'true') return;
+      link.dataset.installReady = 'true';
+      link.addEventListener('click', handleInstallClick);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', enhanceInstallLinks);
+  } else {
+    enhanceInstallLinks();
+  }
+})();
+
