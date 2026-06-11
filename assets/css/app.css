@@ -1219,3 +1219,31 @@ img { max-width: 100%; height: auto; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
+/* Mobile fix: keep the matches hero title inside the page width */
+@media (max-width: 720px) {
+  .page-matches .hero h1 {
+    font-size: clamp(3.25rem, 15vw, 5.9rem);
+    line-height: 0.9;
+    max-width: 100%;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+}
+
+.mobile-break {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .mobile-break {
+    display: inline;
+  }
+
+  .page-matches .hero h1 {
+    font-size: clamp(3rem, 13vw, 5rem);
+    line-height: 0.9;
+  }
+}
+
