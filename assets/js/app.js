@@ -511,12 +511,115 @@ function matchStatusLabel(match) {
   return formatMatchTime(match.date);
 }
 
+const teamFlagMap = {
+  'mexico': '🇲🇽',
+  'south africa': '🇿🇦',
+  'zuid-afrika': '🇿🇦',
+  'south korea': '🇰🇷',
+  'zuid-korea': '🇰🇷',
+  'czech republic': '🇨🇿',
+  'tsjechie': '🇨🇿',
+  'tsjechië': '🇨🇿',
+  'canada': '🇨🇦',
+  'bosnia and herzegovina': '🇧🇦',
+  'bosnie en herzegovina': '🇧🇦',
+  'bosnië en herzegovina': '🇧🇦',
+  'bosnië & herzegovina': '🇧🇦',
+  'qatar': '🇶🇦',
+  'switzerland': '🇨🇭',
+  'zwitserland': '🇨🇭',
+  'brazil': '🇧🇷',
+  'brazilië': '🇧🇷',
+  'morocco': '🇲🇦',
+  'marokko': '🇲🇦',
+  'haiti': '🇭🇹',
+  'haïti': '🇭🇹',
+  'scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  'schotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  'united states': '🇺🇸',
+  'verenigde staten': '🇺🇸',
+  'paraguay': '🇵🇾',
+  'australia': '🇦🇺',
+  'australië': '🇦🇺',
+  'turkey': '🇹🇷',
+  'turkije': '🇹🇷',
+  'germany': '🇩🇪',
+  'duitsland': '🇩🇪',
+  'curacao': '🇨🇼',
+  'curaçao': '🇨🇼',
+  'ivory coast': '🇨🇮',
+  'ivoorkust': '🇨🇮',
+  'ecuador': '🇪🇨',
+  'netherlands': '🇳🇱',
+  'nederland': '🇳🇱',
+  'japan': '🇯🇵',
+  'sweden': '🇸🇪',
+  'zweden': '🇸🇪',
+  'tunisia': '🇹🇳',
+  'tunesië': '🇹🇳',
+  'belgium': '🇧🇪',
+  'belgië': '🇧🇪',
+  'egypt': '🇪🇬',
+  'egypte': '🇪🇬',
+  'iran': '🇮🇷',
+  'new zealand': '🇳🇿',
+  'nieuw-zeeland': '🇳🇿',
+  'spain': '🇪🇸',
+  'spanje': '🇪🇸',
+  'cape verde': '🇨🇻',
+  'kaapverdië': '🇨🇻',
+  'saudi arabia': '🇸🇦',
+  'saoedi-arabië': '🇸🇦',
+  'uruguay': '🇺🇾',
+  'france': '🇫🇷',
+  'frankrijk': '🇫🇷',
+  'senegal': '🇸🇳',
+  'iraq': '🇮🇶',
+  'irak': '🇮🇶',
+  'norway': '🇳🇴',
+  'noorwegen': '🇳🇴',
+  'austria': '🇦🇹',
+  'oostenrijk': '🇦🇹',
+  'jordan': '🇯🇴',
+  'jordanië': '🇯🇴',
+  'argentina': '🇦🇷',
+  'argentinië': '🇦🇷',
+  'algeria': '🇩🇿',
+  'algerije': '🇩🇿',
+  'portugal': '🇵🇹',
+  'congo dr': '🇨🇩',
+  'congo': '🇨🇩',
+  'uzbekistan': '🇺🇿',
+  'oezbekistan': '🇺🇿',
+  'colombia': '🇨🇴',
+  'england': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+  'engeland': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+  'croatia': '🇭🇷',
+  'kroatië': '🇭🇷',
+  'ghana': '🇬🇭',
+  'panama': '🇵🇦'
+};
+
+function normalizeTeamNameForFlag(name) {
+  return String(name || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ');
+}
+
+function getTeamFlag(name) {
+  return teamFlagMap[normalizeTeamNameForFlag(name)] || '';
+}
+
 function renderTeam(name, logo, align = '') {
-  const flag = logo && /^https?:\/\//i.test(logo)
-    ? `<img src="${escapeHtml(logo)}" alt="" loading="lazy">`
-    : logo
-      ? `<span class="team-flag" aria-hidden="true">${escapeHtml(logo)}</span>`
-      : '<span class="team-placeholder">•</span>';
+  const emojiFlag = getTeamFlag(name);
+  const flag = emojiFlag
+    ? `<span class="team-flag" aria-hidden="true">${escapeHtml(emojiFlag)}</span>`
+    : logo && /^https?:\/\//i.test(logo)
+      ? `<img src="${escapeHtml(logo)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'), { className: 'team-placeholder', textContent: '•' }))">`
+      : logo
+        ? `<span class="team-flag" aria-hidden="true">${escapeHtml(logo)}</span>`
+        : '<span class="team-placeholder">•</span>';
   return `<div class="match-team ${align}">
     ${flag}
     <span>${escapeHtml(name)}</span>
