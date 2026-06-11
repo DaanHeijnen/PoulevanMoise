@@ -1,4 +1,4 @@
-const CACHE_NAME = 'poule-van-moise-v1';
+const CACHE_NAME = 'poule-van-moise-v2';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -8,6 +8,7 @@ const APP_SHELL = [
   '/assets/js/app.js',
   '/assets/icon-192.png',
   '/assets/icon-512.png',
+  '/assets/maskable-icon-512.png',
   '/assets/apple-touch-icon.png',
   '/manifest.webmanifest'
 ];
