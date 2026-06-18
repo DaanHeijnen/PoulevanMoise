@@ -1,9 +1,16 @@
 const { json, withDb, ensureRankingsTable } = require('./_shared');
 
+function sortRankingEntries(entries = []) {
+  return entries
+    .map((entry, index) => ({ ...entry, originalIndex: index }))
+    .sort((a, b) => a.position - b.position || a.originalIndex - b.originalIndex)
+    .map(({ originalIndex, ...entry }) => entry);
+}
+
 function normalizeRankingEntries(value) {
   if (!Array.isArray(value)) return [];
 
-  return value.map((entry, index) => {
+  return sortRankingEntries(value.map((entry, index) => {
     if (entry && typeof entry === 'object') {
       return {
         position: Number(entry.position || entry.rank || index + 1),
@@ -15,7 +22,7 @@ function normalizeRankingEntries(value) {
       position: index + 1,
       name: String(entry || '').trim()
     };
-  }).filter((entry) => Number.isInteger(entry.position) && entry.position > 0 && entry.name);
+  }).filter((entry) => Number.isInteger(entry.position) && entry.position > 0 && entry.name));
 }
 
 exports.handler = async (event) => {
