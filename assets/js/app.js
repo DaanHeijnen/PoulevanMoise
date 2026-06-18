@@ -825,13 +825,65 @@ function formatAmsterdamDateTime(value) {
   }).format(date);
 }
 
-function renderRankingNames(names = []) {
-  return names.map((name, index) => `
-    <li class="ranking-item">
-      <span class="ranking-number">${index + 1}</span>
-      <span class="ranking-name">${escapeHtml(name)}</span>
-    </li>
-  `).join('');
+function normalizeRankingEntries(ranking = {}) {
+  if (Array.isArray(ranking.entries)) {
+    return ranking.entries
+      .map((entry) => ({
+        position: Number(entry.position),
+        name: String(entry.name || '').trim()
+      }))
+      .filter((entry) => Number.isInteger(entry.position) && entry.position > 0 && entry.name);
+  }
+
+  const names = Array.isArray(ranking.names) ? ranking.names : [];
+  return names
+    .map((entry, index) => {
+      if (entry && typeof entry === 'object') {
+        return {
+          position: Number(entry.position || entry.rank || index + 1),
+          name: String(entry.name || '').trim()
+        };
+      }
+
+      return {
+        position: index + 1,
+        name: String(entry || '').trim()
+      };
+    })
+    .filter((entry) => Number.isInteger(entry.position) && entry.position > 0 && entry.name);
+}
+
+function formatRankingInput(entries = []) {
+  return entries.map((entry) => `${entry.position}. ${entry.name}`).join('\n');
+}
+
+function getSharedPositions(entries = []) {
+  const counts = entries.reduce((acc, entry) => {
+    acc[entry.position] = (acc[entry.position] || 0) + 1;
+    return acc;
+  }, {});
+
+  return Object.keys(counts)
+    .map(Number)
+    .filter((position) => counts[position] > 1)
+    .sort((a, b) => a - b);
+}
+
+function renderRankingEntries(entries = []) {
+  const sharedPositions = new Set(getSharedPositions(entries));
+
+  return entries.map((entry) => {
+    const isShared = sharedPositions.has(entry.position);
+    return `
+      <li class="ranking-item${isShared ? ' ranking-item-shared' : ''}">
+        <span class="ranking-number">${entry.position}</span>
+        <span class="ranking-name-wrap">
+          <span class="ranking-name">${escapeHtml(entry.name)}</span>
+          ${isShared ? `<span class="ranking-shared-label">Gedeelde ${entry.position}e plek</span>` : ''}
+        </span>
+      </li>
+    `;
+  }).join('');
 }
 
 async function initRankings() {
@@ -844,16 +896,16 @@ async function initRankings() {
   try {
     const data = await request('/rankings');
     const ranking = data.ranking || {};
-    const names = Array.isArray(ranking.names) ? ranking.names : [];
+    const entries = normalizeRankingEntries(ranking);
     loading.hidden = true;
     updatedAt.textContent = formatAmsterdamDateTime(ranking.updatedAt);
 
-    if (!names.length) {
+    if (!entries.length) {
       empty.hidden = false;
       return;
     }
 
-    list.innerHTML = renderRankingNames(names);
+    list.innerHTML = renderRankingEntries(entries);
   } catch (err) {
     loading.hidden = true;
     error.textContent = err.message;
@@ -864,8 +916,16 @@ async function initRankings() {
 function parseRankingInput(value) {
   return String(value || '')
     .split(/\r?\n/)
-    .map((line) => line.replace(/^\s*(?:\d+[.)-]?\s*|[-*•]\s*)/, '').trim())
-    .filter(Boolean);
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const match = line.match(/^\s*(\d+)\s*[.)-]?\s+(.+)$/);
+      if (!match) return null;
+      return {
+        position: Number(match[1]),
+        name: match[2].trim()
+      };
+    });
 }
 
 async function initAdminRankings() {
@@ -879,8 +939,8 @@ async function initAdminRankings() {
 
   try {
     const data = await request('/rankings');
-    const names = data.ranking && Array.isArray(data.ranking.names) ? data.ranking.names : [];
-    if (names.length) textarea.value = names.map((name, index) => `${index + 1}. ${name}`).join('\n');
+    const entries = normalizeRankingEntries(data.ranking || {});
+    if (entries.length) textarea.value = formatRankingInput(entries);
   } catch (_) {}
 
   form.addEventListener('submit', async (event) => {
@@ -888,9 +948,13 @@ async function initAdminRankings() {
     message.hidden = true;
     error.hidden = true;
 
-    const names = parseRankingInput(textarea.value);
-    if (names.length !== 10) {
-      error.textContent = `Je hebt ${names.length} namen ingevuld. Vul precies 10 namen in.`;
+    const parsedEntries = parseRankingInput(textarea.value);
+    const invalidLines = parsedEntries.filter((entry) => !entry);
+    const entries = parsedEntries.filter(Boolean);
+    const invalidPositions = entries.filter((entry) => !Number.isInteger(entry.position) || entry.position < 1 || entry.position > 10);
+
+    if (!entries.length || invalidLines.length || invalidPositions.length) {
+      error.textContent = 'Vul iedere regel in als rankingnummer plus naam, bijvoorbeeld: 3. Daan. Gebruik plekken 1 tot en met 10. Gedeelde plekken mogen vaker voorkomen.';
       error.hidden = false;
       return;
     }
@@ -898,12 +962,14 @@ async function initAdminRankings() {
     try {
       const data = await request('/rankings-update', {
         method: 'POST',
-        body: JSON.stringify({ names })
+        body: JSON.stringify({ entries })
       });
       const updatedAt = data.ranking ? data.ranking.updatedAt : null;
-      message.textContent = `Ranking opgeslagen. Laatst bijgewerkt: ${formatAmsterdamDateTime(updatedAt)}.`;
+      const savedEntries = normalizeRankingEntries(data.ranking || { entries });
+      const sharedPositions = getSharedPositions(savedEntries);
+      message.textContent = `Ranking opgeslagen. Laatst bijgewerkt: ${formatAmsterdamDateTime(updatedAt)}.${sharedPositions.length ? ` Gedeelde plekken: ${sharedPositions.join(', ')}.` : ''}`;
       message.hidden = false;
-      textarea.value = names.map((name, index) => `${index + 1}. ${name}`).join('\n');
+      textarea.value = formatRankingInput(savedEntries);
     } catch (err) {
       error.textContent = err.message;
       error.hidden = false;
