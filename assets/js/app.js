@@ -825,18 +825,25 @@ function formatAmsterdamDateTime(value) {
   }).format(date);
 }
 
+function sortRankingEntries(entries = []) {
+  return entries
+    .map((entry, index) => ({ ...entry, originalIndex: index }))
+    .sort((a, b) => a.position - b.position || a.originalIndex - b.originalIndex)
+    .map(({ originalIndex, ...entry }) => entry);
+}
+
 function normalizeRankingEntries(ranking = {}) {
   if (Array.isArray(ranking.entries)) {
-    return ranking.entries
+    return sortRankingEntries(ranking.entries
       .map((entry) => ({
         position: Number(entry.position),
         name: String(entry.name || '').trim()
       }))
-      .filter((entry) => Number.isInteger(entry.position) && entry.position > 0 && entry.name);
+      .filter((entry) => Number.isInteger(entry.position) && entry.position > 0 && entry.name));
   }
 
   const names = Array.isArray(ranking.names) ? ranking.names : [];
-  return names
+  return sortRankingEntries(names
     .map((entry, index) => {
       if (entry && typeof entry === 'object') {
         return {
@@ -850,7 +857,7 @@ function normalizeRankingEntries(ranking = {}) {
         name: String(entry || '').trim()
       };
     })
-    .filter((entry) => Number.isInteger(entry.position) && entry.position > 0 && entry.name);
+    .filter((entry) => Number.isInteger(entry.position) && entry.position > 0 && entry.name));
 }
 
 function formatRankingInput(entries = []) {
@@ -951,10 +958,10 @@ async function initAdminRankings() {
     const parsedEntries = parseRankingInput(textarea.value);
     const invalidLines = parsedEntries.filter((entry) => !entry);
     const entries = parsedEntries.filter(Boolean);
-    const invalidPositions = entries.filter((entry) => !Number.isInteger(entry.position) || entry.position < 1 || entry.position > 10);
+    const invalidPositions = entries.filter((entry) => !Number.isInteger(entry.position) || entry.position < 1);
 
     if (!entries.length || invalidLines.length || invalidPositions.length) {
-      error.textContent = 'Vul iedere regel in als rankingnummer plus naam, bijvoorbeeld: 3. Daan. Gebruik plekken 1 tot en met 10. Gedeelde plekken mogen vaker voorkomen.';
+      error.textContent = 'Vul iedere regel in als rankingnummer plus naam, bijvoorbeeld: 14. Daan. Ieder positief nummer mag gebruikt worden en gedeelde plekken mogen vaker voorkomen.';
       error.hidden = false;
       return;
     }

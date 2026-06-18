@@ -28,18 +28,24 @@ function normalizeRankingEntries(value) {
   }).filter((entry) => entry.name);
 }
 
+function sortRankingEntries(entries = []) {
+  return entries
+    .map((entry, index) => ({ ...entry, originalIndex: index }))
+    .sort((a, b) => a.position - b.position || a.originalIndex - b.originalIndex)
+    .map(({ originalIndex, ...entry }) => entry);
+}
+
 function validateRankingEntries(entries) {
   if (!entries.length) return 'Vul minimaal 1 naam in.';
 
   const invalidEntry = entries.find((entry) => (
     !Number.isInteger(entry.position) ||
     entry.position < 1 ||
-    entry.position > 10 ||
     !entry.name
   ));
 
   if (invalidEntry) {
-    return 'Vul iedere regel in als rankingnummer plus naam. Gebruik plekken 1 tot en met 10. Gedeelde plekken mogen vaker voorkomen.';
+    return 'Vul iedere regel in als rankingnummer plus naam. Ieder positief nummer mag gebruikt worden en gedeelde plekken mogen vaker voorkomen.';
   }
 
   return null;
@@ -51,7 +57,7 @@ exports.handler = async (event) => {
     requireAdmin(event);
     const body = parseBody(event);
     const source = body.entries || body.names || body.rankingText;
-    const entries = normalizeRankingEntries(source);
+    const entries = sortRankingEntries(normalizeRankingEntries(source));
     const validationError = validateRankingEntries(entries);
 
     if (validationError) {
