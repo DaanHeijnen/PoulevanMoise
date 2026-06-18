@@ -978,6 +978,12 @@ img { max-width: 100%; height: auto; }
   line-height: .9;
 }
 
+.ranking-name-wrap {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
 .ranking-name {
   min-width: 0;
   color: var(--ink);
@@ -987,6 +993,22 @@ img { max-width: 100%; height: auto; }
   line-height: .88;
   letter-spacing: -.04em;
   overflow-wrap: anywhere;
+}
+
+.ranking-item-shared {
+  border-color: rgba(236,106,45,.42);
+}
+
+.ranking-shared-label {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #fff2ea;
+  color: var(--orange-dark);
+  font-weight: 800;
+  font-size: .78rem;
+  letter-spacing: .01em;
+  text-transform: uppercase;
 }
 
 .admin-help {
